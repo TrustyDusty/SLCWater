@@ -4,11 +4,11 @@
 <head>
     <style>
         body {
-            background-color: rgb(30, 30, 30);
             margin: 0;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            background: radial-gradient(circle at center, rgb(30, 30, 30) 0%, rgb(0, 0, 0) 100%);
         }
 
         .blue-box {
@@ -94,7 +94,6 @@
             padding: 20px;
             margin: 20px;
             margin-top: 4cm;
-            /* Add this line */
             display: none;
             position: relative;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -129,12 +128,22 @@
             width: 200px;
             text-align: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: static;
+            top: calc(2.3cm + 5cm + 2px + 4cm);
+            transform: none;
+            transition: top 0.5s ease-in-out;
+        }
+
+        .shop-boxes {
             position: absolute;
             top: calc(2.3cm + 5cm + 2px);
             left: 50%;
             transform: translateX(-50%);
-            transition: top 0.5s ease-in-out;
+            display: flex;
+            justify-content: center;
+            gap: 2cm;
         }
+
 
         .shop-box img {
             width: 100px;
@@ -149,19 +158,58 @@
             margin-top: 10px;
             cursor: pointer;
         }
+
+        .contact-box img {
+            display: none;
+            width: 25%;
+            height: 25%;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .team-box, .contact-box, .shop-box {
+            transition: all 0.5s ease;
+        }
+
+        .ornamental-button:hover, .shop-box button:hover {
+            transform: scale(1.1);
+        }
+
+        .blue-box {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                background-color: rgb(84, 153, 243);
+            }
+            50% {
+                background-color: rgb(64, 133, 223);
+            }
+            100% {
+                background-color: rgb(84, 153, 243);
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="blue-box">
         <img src="icon.png" alt="SLC Water Icon" class="brand-icon">
-        <button class="ornamental-button">Contact</button>
-        <button class="ornamental-button" onclick="toggleTeam()">Despre Noi</button>
+        <button class="ornamental-button toggle-contact" id="toggleContactButton">Contact</button>
+        <button class="ornamental-button toggle-team" id="toggleTeamButton">Despre Noi</button>
         <button class="ornamental-button">Carucior</button>
     </div>
 
+    <div id="contactBox" class="contact-box">
+        <button class="close-btn toggle-contact" id="closeContactButton">X</button>
+        <img src="echipaslc.jpg" alt="SLC Water Team">
+    </div>
+
     <div id="teamBox" class="team-box">
-        <button class="close-btn" onclick="toggleTeam()">X</button>
+        <button class="close-btn toggle-team" id="closeTeamButton">X</button>
         <h2>Echipa Noastră:</h2>
         <div>
             <h3>Surigiu Darius</h3>
@@ -178,49 +226,95 @@
             <p>Un antreprenor entuziast, care combină pasiunea pentru sport cu o abordare strategică a afacerilor.</p>
         </div>
     </div>
-    <div class="wave"></div>
     <div class="blue-line"></div>
 
-    <div class="shop-box">
-        <img src="icon.png" alt="SLC Water Icon">
-        <h2>Bax de apa 2L SLC</h2>
-        <p>Pret: 4.50 RON</p>
-        <p>Stoc: 50</p>
-        <button>Cumpara</button>
+    <div class="shop-boxes">
+
+        <div class="shop-box" id="firstShopBox">
+            <img src="sticla.jpg" alt="SLC Water Icon">
+            <h2>Bax de apa 2L SLC</h2>
+            <p>Pret: 20 RON</p>
+            <p>Stoc: 50</p>
+            <button>Cumpara</button>
+        </div>
+
+        <div class="shop-box" id="secondShopBox">
+            <img src="pahar.jpg" alt="Another SLC Water Icon">
+            <h2>Apa SLC La Sticla de 2L</h2>
+            <p>Pret: 2.00 RON</p>
+            <p>Stoc: 200</p>
+            <button>Cumpara</button>
+        </div>
+
     </div>
 
     <script>
-        var teamVisible = false;
+        let teamVisible = false;
+        let contactVisible = false;
 
         function updatePositions() {
-            var teamBox = document.getElementById("teamBox");
-            var blueLine = document.querySelector(".blue-line");
-            var shopBox = document.querySelector(".shop-box");
-            var teamBoxHeight = teamBox.offsetHeight;
-            blueLine.style.top = "calc(2.3cm + 5cm + 2px + " + teamBoxHeight + "px + 4cm)";
-            shopBox.style.top = "calc(2.3cm + 5cm + 2px + " + teamBoxHeight + "px + 4cm)";
+            const teamBox = document.querySelector("#teamBox");
+            const contactBox = document.querySelector("#contactBox");
+            const contactImage = contactBox.querySelector("img");
+            const blueLine = document.querySelector(".blue-line");
+            const shopBoxes = document.querySelector(".shop-boxes");
+            const boxHeight = teamVisible ? teamBox.offsetHeight : contactBox.offsetHeight + (contactVisible ? contactImage.offsetHeight : 0);
+            blueLine.style.top = "calc(2.3cm + 5cm + 2px + " + boxHeight + "px + 4cm + 5cm)";
+            shopBoxes.style.top = "calc(2.3cm + 5cm + 2px + " + boxHeight + "px + 4cm + 5cm)";
         }
 
+        function toggleContact() {
+            const contactBox = document.querySelector("#contactBox");
+            const contactImage = contactBox.querySelector("img");
+            const blueLine = document.querySelector(".blue-line");
+            const shopBoxes = document.querySelector(".shop-boxes");
 
+            if (contactVisible) {
+                contactBox.style.display = "none";
+                contactImage.style.display = "none";
+                blueLine.style.top = "calc(2.3cm + 5cm + 2px)";
+                shopBoxes.style.top = "calc(2.3cm + 5cm + 2px)";
+            } else {
+                contactBox.style.display = "block";
+                contactImage.style.display = "block";
+                updatePositions();
+            }
+
+            contactVisible = !contactVisible;
+        }
         function toggleTeam() {
-            var teamBox = document.getElementById("teamBox");
-            var blueLine = document.querySelector(".blue-line");
-            var shopBox = document.querySelector(".shop-box");
+            const teamBox = document.querySelector("#teamBox");
+            const blueLine = document.querySelector(".blue-line");
+            const shopBoxes = document.querySelector(".shop-boxes");
 
             if (teamVisible) {
                 teamBox.style.display = "none";
                 blueLine.style.top = "calc(2.3cm + 5cm + 2px)";
-                shopBox.style.top = "calc(2.3cm + 5cm + 2px)";
+                shopBoxes.style.top = "calc(2.3cm + 5cm + 2px)";
             } else {
                 teamBox.style.display = "block";
+                teamBox.style.alignSelf = "center";
                 updatePositions();
             }
 
             teamVisible = !teamVisible;
         }
 
+        const toggleTeamButton = document.querySelector("#toggleTeamButton");
+        toggleTeamButton.addEventListener("click", toggleTeam);
+
+        const closeTeamButton = document.querySelector("#closeTeamButton");
+        closeTeamButton.addEventListener("click", toggleTeam);
+
+        const toggleContactButton = document.querySelector("#toggleContactButton");
+        toggleContactButton.addEventListener("click", toggleContact);
+
+        const closeContactButton = document.querySelector("#closeContactButton");
+        closeContactButton.addEventListener("click", toggleContact);
+
         window.addEventListener('scroll', updatePositions);
     </script>
+
 </body>
 
 </html>
